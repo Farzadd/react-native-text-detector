@@ -76,19 +76,21 @@ public class RNTextDetectorModule extends ReactContextBaseJavaModule {
         WritableMap coordinates = Arguments.createMap();
 
         for (FirebaseVisionText.TextBlock block: firebaseVisionText.getTextBlocks()) {
-            info = Arguments.createMap();
-            coordinates = Arguments.createMap();
+            for (FirebaseVisionText.Line line: block.getLines()) {
+                info = Arguments.createMap();
+                coordinates = Arguments.createMap();
 
-            Rect boundingBox = block.getBoundingBox();
+                Rect boundingBox = line.getBoundingBox();
 
-            coordinates.putInt("top", boundingBox.top);
-            coordinates.putInt("left", boundingBox.left);
-            coordinates.putInt("width", boundingBox.width());
-            coordinates.putInt("height", boundingBox.height());
+                coordinates.putInt("top", boundingBox.top);
+                coordinates.putInt("left", boundingBox.left);
+                coordinates.putInt("width", boundingBox.width());
+                coordinates.putInt("height", boundingBox.height());
 
-            info.putMap("bounding", coordinates);
-            info.putString("text", block.getText());
-            data.pushMap(info);
+                info.putMap("bounding", coordinates);
+                info.putString("text", line.getText());
+                data.pushMap(info);
+            }
         }
 
         return data;
